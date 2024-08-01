@@ -6,12 +6,29 @@ fn main(){
   let mut l = LinkList::new();
   let now = Instant::now();
   for i in 1..NODE_NUMBER{
-      l.push_front_node(i as i32);
+      l.push_front(i as i32);
   }
   for _ in 1..NODE_NUMBER{
-      l.pop_front_node();
+      l.pop_front();
   }
   println!("{} costs {} mills ", NODE_NUMBER,now.elapsed().as_millis());
+}
+#[test]
+fn test1(){
+    let mut l = LinkList::new();
+    l.push_front(12);
+    l.push_front(-12);
+    l.push_front(0);
+    assert_eq!(l.pop_front(),Some(0));
+    assert_eq!(l.pop_front(),Some(-12));
+    assert_eq!(l.pop_front(),Some(12));
+}
+#[test]
+fn test2(){
+    let mut l = LinkList::new();
+    l.push_front(12);
+    l.push_front(10);
+    assert_eq!(l.as_vec().unwrap(),vec![10,12]);
 }
 type LINKNODE = Option<NonNull<Node>>;
 struct LinkList{
@@ -43,17 +60,17 @@ impl LinkList{
     pub fn new()->Self{
         LinkList{head:None,tail:None,len:0}
     }
-    pub fn push_front_node(&mut self,elm:i32){
+    pub fn push_front(&mut self,elm:i32){
         self.push_front_elm(elm);
         self.len += 1;
     }
-     pub fn pop_front_node(&mut self)->Option<Node>{
+     pub fn pop_front(&mut self)->Option<i32>{
         if self.len <=0{
             return None;
         }
         match self.drop_front_elm(){
 		        None=>None,
-		        Some(v)=>{self.len -=1;return Some(v);}
+		        Some(v)=>{self.len -=1;return Some(v.elm);}
 	      }
         
     }
@@ -61,7 +78,7 @@ impl LinkList{
 
 
 
-    //pub fn pop_front_node(&mut self)->Option<Box<Node>>{
+    //pub fn pop_front(&mut self)->Option<Box<Node>>{
     //    if self.len <=0{
     //        return None;
     //    }
